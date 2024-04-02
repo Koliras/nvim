@@ -50,18 +50,19 @@ return require('packer').startup(function(use)
 			{"rafamadriz/friendly-snippets"},
 		}	
 	}
-    use('ThePrimeagen/vim-be-good')
-    use {
-        "windwp/nvim-autopairs",
-        event = "InsertEnter",
-        config = function()
-            require("nvim-autopairs").setup {}
-        end
-    }
-    use {
-        'numToStr/Comment.nvim',
-        config = function()
-            require('Comment').setup()
-        end
-    }
+  use('windwp/nvim-ts-autotag')
+  use('ThePrimeagen/vim-be-good')
+  use {
+      "windwp/nvim-autopairs",
+      event = "InsertEnter",
+      config = function()
+          require("nvim-autopairs").setup {}
+      end
+  }
+  use {
+      'numToStr/Comment.nvim',
+      config = function()
+          require('Comment').setup()
+      end
+  }
 end)
