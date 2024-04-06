@@ -23,6 +23,7 @@ end)
 
 lsp_zero.setup()
 require('mini.completion').setup()
+require('mini.pairs').setup()
 
 -- to learn how to use mason.nvim with lsp-zero
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/integrate-with-mason-nvim.md
@@ -41,15 +42,15 @@ require('mason-lspconfig').setup({
 local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 
-local luasnip = require('luasnip')
-require('luasnip.loaders.from_vscode').lazy_load()
+-- local luasnip = require('luasnip')
+-- require('luasnip.loaders.from_vscode').lazy_load()
 
 cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
+  -- snippet = {
+  --   expand = function(args)
+  --     luasnip.lsp_expand(args.body)
+  --   end,
+  -- },
   sources = {
     {name = 'path'},
     {name = 'nvim_lsp'},

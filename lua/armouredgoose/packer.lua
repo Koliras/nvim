@@ -52,13 +52,7 @@ return require('packer').startup(function(use)
 	}
   use('windwp/nvim-ts-autotag')
   use('ThePrimeagen/vim-be-good')
-  use {
-      "windwp/nvim-autopairs",
-      event = "InsertEnter",
-      config = function()
-          require("nvim-autopairs").setup {}
-      end
-  }
+  use('echasnovski/mini.pairs')
   use {
       'numToStr/Comment.nvim',
       config = function()
