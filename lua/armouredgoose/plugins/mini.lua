@@ -23,5 +23,5 @@ return {
 			end
 		end,
 	},
-	{ 'echasnovski/mini.pairs', opts = {} },
+	-- { 'echasnovski/mini.pairs', opts = {} },
 }
