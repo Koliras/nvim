@@ -6,7 +6,10 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagn
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set('n', "<leader>t", "<C-w>v:terminal<CR>", { desc = 'Open terminal to the right' })
+vim.keymap.set("t", "<leader>q", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("t", "<leader>x", "<C-\\><C-n>:q<CR>", { desc = "Close terminal window" })
+vim.keymap.set("n", "<leader>x", "<C-\\><C-n>:q<CR>", { desc = "Close terminal window" })
 
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
