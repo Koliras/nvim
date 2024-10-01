@@ -1,12 +1,17 @@
 return {
-	"folke/tokyonight.nvim",
+	"catppuccin/nvim",
+	name = "catppuccin",
 	priority = 1000,
-	opts = {
-		transparent = true,
-	},
-	init = function()
-		vim.cmd.colorscheme("tokyonight-night")
+	config = function()
+		require("catppuccin").setup({
+			flavour = 'mocha',
+			styles = {
+				comments = {},
+				conditionals = {},
+			},
+		})
 
-		vim.cmd.hi("Comment gui=none")
+		-- setup must be called before loading
+		vim.cmd.colorscheme "catppuccin"
 	end,
 }
