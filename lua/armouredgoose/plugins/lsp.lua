@@ -6,6 +6,7 @@ return {
 			'williamboman/mason.nvim',
 			'williamboman/mason-lspconfig.nvim',
 			'WhoIsSethDaniel/mason-tool-installer.nvim',
+			"artemave/workspace-diagnostics.nvim",
 
 			-- Useful status updates for LSP.
 			-- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -63,6 +64,7 @@ return {
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.documentHighlightProvider then
+						require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
 						vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
 							buffer = event.buf,
 							callback = vim.lsp.buf.document_highlight,
