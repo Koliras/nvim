@@ -55,3 +55,6 @@ vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none" })
 
 vim.opt.foldmethod = "indent"
 vim.opt.foldlevelstart = 99
+
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
