@@ -4,7 +4,8 @@ return {
 	priority = 1000,
 	config = function()
 		require("catppuccin").setup({
-			flavour = 'mocha',
+			flavour = "mocha",
+			transparent_background = true,
 			styles = {
 				comments = {},
 				conditionals = {},
@@ -12,6 +13,6 @@ return {
 		})
 
 		-- setup must be called before loading
-		vim.cmd.colorscheme "catppuccin"
+		vim.cmd.colorscheme("catppuccin")
 	end,
 }
