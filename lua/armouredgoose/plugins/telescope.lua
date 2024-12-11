@@ -31,6 +31,7 @@ return {
 				["ui-select"] = {
 					require("telescope.themes").get_dropdown(),
 				},
+				fzf = {},
 			},
 			file_ignore_patterns = {
 				"node%_modules/.*",
