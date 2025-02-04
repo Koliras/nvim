@@ -132,7 +132,7 @@ return {
 			{
 				"<leader>f",
 				function()
-					require("conform").format({ async = true, lsp_fallback = true })
+					require("conform").format({ async = true, lsp_format = "fallback" })
 				end,
 				mode = "",
 				desc = "[F]ormat buffer",
@@ -157,17 +157,17 @@ return {
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
-				typescript = { { "prettierd", "prettier" } },
-				typescriptreact = { { "prettierd", "prettier" } },
-				javascript = { { "prettierd", "prettier" } },
-				javascriptreact = { { "prettierd", "prettier" } },
+				typescript = { "prettierd", "prettier" },
+				typescriptreact = { "prettierd", "prettier" },
+				javascript = { "prettierd", "prettier" },
+				javascriptreact = { "prettierd", "prettier" },
 
 				["*"] = { "codespell" },
 			},
 			format_on_save = {
 				-- These options will be passed to conform.format()
 				timeout_ms = 500,
-				lsp_fallback = true,
+				lsp_format = "fallback",
 			},
 		},
 	},
