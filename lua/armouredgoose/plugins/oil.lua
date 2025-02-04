@@ -17,6 +17,7 @@ return {
 			["g."] = { "actions.toggle_hidden", mode = "n" },
 			["g\\"] = { "actions.toggle_trash", mode = "n" },
 		},
+		use_default_keymaps = false,
 		view_options = {
 			-- Show files and directories that start with "."
 			show_hidden = true,
