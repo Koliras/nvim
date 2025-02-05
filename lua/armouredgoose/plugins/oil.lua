@@ -46,6 +46,7 @@ return {
 				return nil
 			end,
 		},
+		skip_confirm_for_simple_edits = true,
 	},
 	-- Optional dependencies
 	dependencies = { { "echasnovski/mini.icons", opts = {} } },
