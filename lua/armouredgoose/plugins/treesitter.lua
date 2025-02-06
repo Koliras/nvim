@@ -27,44 +27,45 @@ return { -- Highlight, edit, and navigate code
 		local ts = require("nvim-treesitter.ts_utils")
 
 		--- @param node TSNode
-		--- @param buf number
-		local function literal_type_to_type(node, buf)
+		--- @param options { bufnr: number }
+		local function literal_type_to_type(node, options)
 			local child = node:named_child(0)
 			if child == nil then
 				return
 			end
 			local content = lit_type_to_lsp_type[child:type()]
 			local start_row, start_col, end_row, end_col = child:range()
-			vim.api.nvim_buf_set_text(buf, start_row, start_col, end_row, end_col, { content })
+			vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, { content })
 		end
 		--- @param node TSNode
-		--- @param buf number
-		local function handle_type_ann_insides(node, buf)
+		--- @param options { bufnr: number }
+		local function handle_type_ann_insides(node, options)
 			if node:type() == "literal_type" then
-				literal_type_to_type(node, buf)
+				literal_type_to_type(node, options)
 			elseif node:type() == "object_type" then
-				for _, property_signature in ipairs(node:named_children()) do
-					Prop_signature_to_type(property_signature, buf)
+				for i = 0, node:named_child_count() - 1 do
+					local property_signature = node:named_child(i)
+					Prop_signature_to_type(property_signature, options)
 				end
 			elseif node:type() == "tuple_type" then
 				local first_child = node:named_child(0)
 				if first_child == nil then
 					return
 				end
-				handle_type_ann_insides(first_child, buf)
-				local content = vim.treesitter.get_node_text(first_child, buf)
+				handle_type_ann_insides(first_child, options)
+				local content = vim.treesitter.get_node_text(first_child, options.bufnr)
 				local start_row, start_col, end_row, end_col = node:range()
 				local lines = {}
 				for s in content:gmatch("[^\r\n]+") do
 					table.insert(lines, s)
 				end
 				lines[#lines] = lines[#lines] .. "[]"
-				vim.api.nvim_buf_set_text(buf, start_row, start_col, end_row, end_col, lines)
+				vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, lines)
 			end
 		end
-		---@param node TSNode
-		--- @param buf number
-		function Prop_signature_to_type(node, buf)
+		--- @param node TSNode
+		--- @param options { bufnr: number }
+		function Prop_signature_to_type(node, options)
 			local type_annotation = node:named_children()[2]
 			if type_annotation == nil then
 				return
@@ -73,7 +74,7 @@ return { -- Highlight, edit, and navigate code
 			if type == nil then
 				return
 			end
-			handle_type_ann_insides(type, buf)
+			handle_type_ann_insides(type, options)
 		end
 
 		local function json_to_type()
@@ -95,8 +96,10 @@ return { -- Highlight, edit, and navigate code
 			if object_type == nil then
 				return
 			end
-			for _, property_signature in ipairs(object_type:named_children()) do
-				Prop_signature_to_type(property_signature, bufnr)
+			local options = { bufnr = bufnr }
+			for i = 0, object_type:named_child_count() - 1 do
+				local property_signature = object_type:named_child(i)
+				Prop_signature_to_type(property_signature, options)
 			end
 		end
 
