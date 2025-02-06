@@ -54,7 +54,12 @@ return { -- Highlight, edit, and navigate code
 				handle_type_ann_insides(first_child, buf)
 				local content = vim.treesitter.get_node_text(first_child, buf)
 				local start_row, start_col, end_row, end_col = node:range()
-				vim.api.nvim_buf_set_text(buf, start_row, start_col, end_row, end_col, { content .. "[]" })
+				local lines = {}
+				for s in content:gmatch("[^\r\n]+") do
+					table.insert(lines, s)
+				end
+				lines[#lines] = lines[#lines] .. "[]"
+				vim.api.nvim_buf_set_text(buf, start_row, start_col, end_row, end_col, lines)
 			end
 		end
 		---@param node TSNode
