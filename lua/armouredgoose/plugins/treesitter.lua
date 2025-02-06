@@ -45,6 +45,7 @@ return { -- Highlight, edit, and navigate code
 			elseif node:type() == "object_type" then
 				for i = 0, node:named_child_count() - 1 do
 					local property_signature = node:named_child(i)
+					---@diagnostic disable-next-line: param-type-mismatch
 					Prop_signature_to_type(property_signature, options)
 				end
 			elseif node:type() == "tuple_type" then
@@ -99,6 +100,7 @@ return { -- Highlight, edit, and navigate code
 			local options = { bufnr = bufnr }
 			for i = 0, object_type:named_child_count() - 1 do
 				local property_signature = object_type:named_child(i)
+				---@diagnostic disable-next-line: param-type-mismatch
 				Prop_signature_to_type(property_signature, options)
 			end
 		end
