@@ -1,33 +1,26 @@
 return {
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-	-- {
-	-- 	"christoomey/vim-tmux-navigator",
-	-- 	cmd = {
-	-- 		"TmuxNavigateLeft",
-	-- 		"TmuxNavigateDown",
-	-- 		"TmuxNavigateUp",
-	-- 		"TmuxNavigateRight",
-	-- 		"TmuxNavigatePrevious",
-	-- 	},
-	-- 	keys = {
-	-- 		{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
-	-- 		{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
-	-- 		{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
-	-- 		{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
-	-- 		{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-	-- 	},
-	-- },
 	{
 		"https://git.sr.ht/~swaits/zellij-nav.nvim",
 		lazy = true,
 		event = "VeryLazy",
-		keys = {
-			{ "<c-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left or tab" } },
-			{ "<c-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
-			{ "<c-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
-			{ "<c-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right or tab" } },
-		},
 		opts = {},
+		config = function()
+			local znav = require("zellij-nav")
+
+			vim.keymap.set("n", "<c-h>", function()
+				pcall(znav.left)
+			end)
+			vim.keymap.set("n", "<c-j>", function()
+				pcall(znav.down)
+			end)
+			vim.keymap.set("n", "<c-k>", function()
+				pcall(znav.up)
+			end)
+			vim.keymap.set("n", "<c-l>", function()
+				pcall(znav.right)
+			end)
+		end,
 	},
 	{
 		"https://github.com/fresh2dev/zellij.vim",
