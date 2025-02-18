@@ -1,4 +1,4 @@
-local lit_type_to_lsp_type = {
+local LITERAL_TYPE_TO_LSP_TYPE = {
 	string = "string",
 	number = "number",
 	unary_expression = "number",
@@ -27,9 +27,6 @@ return { -- Highlight, edit, and navigate code
 		require("nvim-treesitter.configs").setup(opts)
 		local ts = require("nvim-treesitter.ts_utils")
 
-		-- TODO: handle numbers less than 0
-		-- and the case when the response is an array of objects, not object of arrays
-
 		--- @param node TSNode
 		--- @param options { bufnr: number }
 		local function literal_type_to_type(node, options)
@@ -37,28 +34,37 @@ return { -- Highlight, edit, and navigate code
 			if child == nil then
 				return
 			end
-			local content = lit_type_to_lsp_type[child:type()]
+			local content = LITERAL_TYPE_TO_LSP_TYPE[child:type()]
 			local start_row, start_col, end_row, end_col = child:range()
 			vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, { content })
 		end
 		--- @param node TSNode
 		--- @param options { bufnr: number }
 		local function handle_type_ann_insides(node, options)
-			if node:type() == "literal_type" then
+			local node_type = node:type()
+			if node_type == "literal_type" then
 				literal_type_to_type(node, options)
-			elseif node:type() == "object_type" then
+			elseif node_type == "object_type" then
 				for i = 0, node:named_child_count() - 1 do
 					local property_signature = node:named_child(i)
-					---@diagnostic disable-next-line: param-type-mismatch
-					Prop_signature_to_type(property_signature, options)
+					---@diagnostic disable-next-line: need-check-nil
+					local type_annotation = property_signature:named_children()[2]
+					if type_annotation == nil then
+						return
+					end
+					local type = type_annotation:named_child(0)
+					if type == nil then
+						return
+					end
+					handle_type_ann_insides(type, options)
 				end
-			elseif node:type() == "tuple_type" then
-				local first_child = node:named_child(0)
-				if first_child == nil then
+			elseif node_type == "tuple_type" then
+				local first_element_of_array = node:named_child(0)
+				if first_element_of_array == nil then
 					return
 				end
-				handle_type_ann_insides(first_child, options)
-				local content = vim.treesitter.get_node_text(first_child, options.bufnr)
+				handle_type_ann_insides(first_element_of_array, options)
+				local content = vim.treesitter.get_node_text(first_element_of_array, options.bufnr)
 				local start_row, start_col, end_row, end_col = node:range()
 				local lines = {}
 				for s in content:gmatch("[^\r\n]+") do
@@ -68,22 +74,8 @@ return { -- Highlight, edit, and navigate code
 				vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, lines)
 			end
 		end
-		--- @param node TSNode
-		--- @param options { bufnr: number }
-		function Prop_signature_to_type(node, options)
-			local type_annotation = node:named_children()[2]
-			if type_annotation == nil then
-				return
-			end
-			local type = type_annotation:named_child(0)
-			if type == nil then
-				return
-			end
-			handle_type_ann_insides(type, options)
-		end
 
 		local function json_to_type()
-			vim.cmd.w()
 			local bufnr = vim.api.nvim_get_current_buf()
 			local node = ts.get_node_at_cursor()
 			if node == nil then
@@ -97,16 +89,12 @@ return { -- Highlight, edit, and navigate code
 				end
 				node = parent
 			end
-			local object_type = node:named_children()[2] -- get type body
-			if object_type == nil then
+			local type_annotation = node:named_children()[2] -- get type body
+			if type_annotation == nil then
 				return
 			end
 			local options = { bufnr = bufnr }
-			for i = 0, object_type:named_child_count() - 1 do
-				local property_signature = object_type:named_child(i)
-				---@diagnostic disable-next-line: param-type-mismatch
-				Prop_signature_to_type(property_signature, options)
-			end
+			handle_type_ann_insides(type_annotation, options)
 		end
 
 		vim.keymap.set("n", "<leader>js", json_to_type)
