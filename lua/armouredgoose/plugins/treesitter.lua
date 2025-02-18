@@ -1,6 +1,7 @@
 local lit_type_to_lsp_type = {
 	string = "string",
 	number = "number",
+	unary_expression = "number",
 	["true"] = "boolean",
 	["false"] = "boolean",
 	null = "null",
@@ -25,6 +26,9 @@ return { -- Highlight, edit, and navigate code
 		---@diagnostic disable-next-line: missing-fields
 		require("nvim-treesitter.configs").setup(opts)
 		local ts = require("nvim-treesitter.ts_utils")
+
+		-- TODO: handle numbers less than 0
+		-- and the case when the response is an array of objects, not object of arrays
 
 		--- @param node TSNode
 		--- @param options { bufnr: number }
