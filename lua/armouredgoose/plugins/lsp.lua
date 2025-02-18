@@ -205,13 +205,44 @@ return {
 		config = function()
 			-- See `:help cmp`
 			local cmp = require("cmp")
-			local luasnip = require("luasnip")
-			luasnip.config.setup({})
+			local ls = require("luasnip")
+			ls.config.setup({})
+			local snip = ls.snippet
+			local text = ls.text_node
+			local i = ls.insert_node
+			ls.add_snippets("typescript", {
+				snip("fn", {
+					text({ "function " }),
+					i(1),
+					text("("),
+					i(2, "foo"),
+					text({ " : " }),
+					i(3, "string"),
+					text({ "): " }),
+					i(4, "void"),
+					text({ " {", "\t" }),
+					i(0),
+					text({ "", "}" }),
+				}),
+				snip("afn", {
+					text({ "async function " }),
+					i(1, "foo"),
+					text("("),
+					i(2, "bar"),
+					text({ " : " }),
+					i(3, "string"),
+					text({ "): Promise<" }),
+					i(4, "void"),
+					text({ "> {", "\t" }),
+					i(0),
+					text({ "", "}" }),
+				}),
+			})
 
 			cmp.setup({
 				snippet = {
 					expand = function(args)
-						luasnip.lsp_expand(args.body)
+						ls.lsp_expand(args.body)
 					end,
 				},
 				completion = { completeopt = "menu,menuone,noinsert" },
@@ -239,13 +270,13 @@ return {
 					-- <c-l> will move you to the right of each of the expansion locations.
 					-- <c-h> is similar, except moving you backwards.
 					["<C-l>"] = cmp.mapping(function()
-						if luasnip.expand_or_locally_jumpable() then
-							luasnip.expand_or_jump()
+						if ls.expand_or_locally_jumpable() then
+							ls.expand_or_jump()
 						end
 					end, { "i", "s" }),
 					["<C-h>"] = cmp.mapping(function()
-						if luasnip.locally_jumpable(-1) then
-							luasnip.jump(-1)
+						if ls.locally_jumpable(-1) then
+							ls.jump(-1)
 						end
 					end, { "i", "s" }),
 				}),
