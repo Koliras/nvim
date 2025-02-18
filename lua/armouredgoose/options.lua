@@ -26,7 +26,7 @@ vim.opt.smartcase = true
 
 vim.opt.signcolumn = "yes"
 
-vim.opt.colorcolumn = "100"
+vim.opt.colorcolumn = "120"
 
 vim.opt.updatetime = 250
 

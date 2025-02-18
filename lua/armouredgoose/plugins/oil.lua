@@ -28,6 +28,9 @@ return {
 			end,
 			-- This function defines what will never be shown, even when `show_hidden` is set
 			is_always_hidden = function(name, bufnr)
+				if name == ".git" then
+					return true
+				end
 				return false
 			end,
 			-- Sort file names with numbers in a more intuitive order for humans.
@@ -48,9 +51,6 @@ return {
 		},
 		skip_confirm_for_simple_edits = true,
 	},
-	-- Optional dependencies
 	dependencies = { { "echasnovski/mini.icons", opts = {} } },
-	-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-	-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 	lazy = false,
 }
