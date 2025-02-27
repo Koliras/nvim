@@ -62,6 +62,9 @@ return {
 
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
+					if client and client.name == "ols" then
+						client.server_capabilities.completionProvider = nil
+					end
 					if client and client.server_capabilities.documentHighlightProvider then
 						require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -234,6 +237,29 @@ return {
 					text({ "): Promise<" }),
 					i(4, "void"),
 					text({ "> {", "\t" }),
+					i(0),
+					text({ "", "}" }),
+				}),
+				snip("tc", {
+					text({ "try {", "\t" }),
+					i(1),
+					text({ "", "} catch(err: " }),
+					i(2, "any"),
+					text({ ") {", "\t" }),
+					i(0),
+					text({ "", "}" }),
+				}),
+			})
+			ls.add_snippets("odin", {
+				snip("fn", {
+					i(1, "foo"),
+					text({ " :: proc(" }),
+					i(2, "bar"),
+					text({ ": " }),
+					i(3, "int"),
+					text({ ") -> " }),
+					i(4, "int"),
+					text({ " {", "\t" }),
 					i(0),
 					text({ "", "}" }),
 				}),
