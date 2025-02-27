@@ -209,20 +209,19 @@ return {
 			-- See `:help cmp`
 			local cmp = require("cmp")
 			local ls = require("luasnip")
-			ls.config.setup({})
+			ls.setup({})
 			local snip = ls.snippet
 			local text = ls.text_node
 			local i = ls.insert_node
+			local c = ls.choice_node
 			ls.add_snippets("typescript", {
 				snip("fn", {
 					text({ "function " }),
-					i(1),
+					i(1, "foo"),
 					text("("),
-					i(2, "foo"),
-					text({ " : " }),
-					i(3, "string"),
+					i(2),
 					text({ "): " }),
-					i(4, "void"),
+					i(3, "void"),
 					text({ " {", "\t" }),
 					i(0),
 					text({ "", "}" }),
@@ -231,11 +230,9 @@ return {
 					text({ "async function " }),
 					i(1, "foo"),
 					text("("),
-					i(2, "bar"),
-					text({ " : " }),
-					i(3, "string"),
+					i(2),
 					text({ "): Promise<" }),
-					i(4, "void"),
+					i(3, "void"),
 					text({ "> {", "\t" }),
 					i(0),
 					text({ "", "}" }),
@@ -243,9 +240,7 @@ return {
 				snip("tc", {
 					text({ "try {", "\t" }),
 					i(1),
-					text({ "", "} catch(err: " }),
-					i(2, "any"),
-					text({ ") {", "\t" }),
+					text({ "", "} catch(err: any) {", "\t" }),
 					i(0),
 					text({ "", "}" }),
 				}),
@@ -254,12 +249,10 @@ return {
 				snip("fn", {
 					i(1, "foo"),
 					text({ " :: proc(" }),
-					i(2, "bar"),
-					text({ ": " }),
-					i(3, "int"),
-					text({ ") -> " }),
-					i(4, "int"),
-					text({ " {", "\t" }),
+					i(2),
+					text({ ") " }),
+					i(3),
+					text({ "{", "\t" }),
 					i(0),
 					text({ "", "}" }),
 				}),
