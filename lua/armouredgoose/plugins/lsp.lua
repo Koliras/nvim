@@ -211,6 +211,7 @@ return {
 			local ls = require("luasnip")
 			ls.setup({})
 			local snip = ls.snippet
+			local snip_n = ls.snippet_node
 			local text = ls.text_node
 			local i = ls.insert_node
 			local c = ls.choice_node
@@ -251,7 +252,7 @@ return {
 					text({ " :: proc(" }),
 					i(2),
 					text({ ") " }),
-					i(3),
+					c(3, { snip_n(nil, { text("-> "), i(1, "int"), text(" ") }), text("") }),
 					text({ "{", "\t" }),
 					i(0),
 					text({ "", "}" }),
@@ -296,6 +297,16 @@ return {
 					["<C-h>"] = cmp.mapping(function()
 						if ls.locally_jumpable(-1) then
 							ls.jump(-1)
+						end
+					end, { "i", "s" }),
+					["<C-k>"] = cmp.mapping(function()
+						if ls.choice_active() then
+							ls.change_choice(-1)
+						end
+					end, { "i", "s" }),
+					["<C-j>"] = cmp.mapping(function()
+						if ls.choice_active() then
+							ls.change_choice(1)
 						end
 					end, { "i", "s" }),
 				}),
