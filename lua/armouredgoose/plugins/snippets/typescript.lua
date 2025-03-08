@@ -6,6 +6,22 @@ local text = ls.text_node
 local i = ls.insert_node
 local c = ls.choice_node
 
+local fetch_snippet = snip("fetch", {
+	text({ "await fetch(" }),
+	c(1, {
+		i(1, "url"),
+		snip_n(nil, {
+			i(1, "url"),
+			text({ ", {", '\tmethod: "' }),
+			i(2, "POST"),
+			text({ '",', "\theaders: {", '\t\tAccept: "' }),
+			i(3, "application/json"),
+			text({ '",', "\t},", "}" }),
+		}),
+	}),
+	text({ ")" }),
+})
+
 return {
 	snip("fn", {
 		text({ "function " }),
@@ -36,19 +52,6 @@ return {
 		i(0),
 		text({ "", "}" }),
 	}),
-	snip("fetch", {
-		text({ "fetch(" }),
-		c(1, {
-			i(1, "url"),
-			snip_n(nil, {
-				i(1, "url"),
-				text({ ", {", '\tmethod: "' }),
-				i(2, "POST"),
-				text({ '",', "\theaders: {", '\t\tAccept: "' }),
-				i(3, "application/json"),
-				text({ '",', "\t},", "}" }),
-			}),
-		}),
-		text({ ")" }),
-	}),
+	snip("fetch", fetch_snippet),
+	snip("fc", fetch_snippet),
 }
