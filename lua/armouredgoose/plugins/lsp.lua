@@ -215,53 +215,8 @@ return {
 			local cmp = require("cmp")
 			local ls = require("luasnip")
 			ls.setup({})
-			local snip = ls.snippet
-			local snip_n = ls.snippet_node
-			local text = ls.text_node
-			local i = ls.insert_node
-			local c = ls.choice_node
-			ls.add_snippets("typescript", {
-				snip("fn", {
-					text({ "function " }),
-					i(1, "foo"),
-					text("("),
-					i(2),
-					text({ "): " }),
-					i(3, "void"),
-					text({ " {", "\t" }),
-					i(0),
-					text({ "", "}" }),
-				}),
-				snip("afn", {
-					text({ "async function " }),
-					i(1, "foo"),
-					text("("),
-					i(2),
-					text({ "): Promise<" }),
-					i(3, "void"),
-					text({ "> {", "\t" }),
-					i(0),
-					text({ "", "}" }),
-				}),
-				snip("tc", {
-					text({ "try {", "\t" }),
-					i(1),
-					text({ "", "} catch(err: any) {", "\t" }),
-					i(0),
-					text({ "", "}" }),
-				}),
-			})
-			ls.add_snippets("odin", {
-				snip("fn", {
-					i(1, "foo"),
-					text({ " :: proc(" }),
-					i(2),
-					text({ ") " }),
-					c(3, { snip_n(nil, { text("-> "), i(1, "int"), text(" ") }), text("") }),
-					text({ "{", "\t" }),
-					i(0),
-					text({ "", "}" }),
-				}),
+			require("luasnip.loaders.from_lua").load({
+				paths = { "~/.config/nvim/lua/armouredgoose/plugins/snippets/" },
 			})
 
 			cmp.setup({
