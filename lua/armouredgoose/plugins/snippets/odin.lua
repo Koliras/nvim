@@ -20,4 +20,9 @@ local proc_snippet = {
 return {
 	snip("fn", proc_snippet),
 	snip("proc", proc_snippet),
+	snip("main", {
+		text({ "main :: proc() {", "\t" }),
+		i(0),
+		text({ "", "}" }),
+	}),
 }
