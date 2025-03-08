@@ -92,6 +92,11 @@ return {
 			local servers = {
 				gopls = {},
 				rust_analyzer = {},
+				ols = {
+					init_options = {
+						enable_references = true,
+					},
+				},
 				lua_ls = {
 					-- cmd = {...},
 					-- filetypes = { ...},
