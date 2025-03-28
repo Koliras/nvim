@@ -19,4 +19,34 @@ return {
 		f(copy, 1),
 		text({ ".statusText)", "}" }),
 	}),
+	snip("fetch", {
+		text({ "await fetch(" }),
+		c(1, {
+			i(1, "url"),
+			snip_n(1, {
+				i(1, "url"),
+				text({ ", {", '\tmethod: "' }),
+				i(2, "POST"),
+				text({ '",', "\theaders: {", '\t\tAccept: "' }),
+				i(3, "application/json"),
+				text({ '",', "\t},", "}" }),
+			}),
+		}),
+		text({ ")" }),
+	}),
+	snip("fc", {
+		text({ "await fetch(" }),
+		c(1, {
+			i(1, "url"),
+			snip_n(1, {
+				i(1, "url"),
+				text({ ", {", '\tmethod: "' }),
+				i(2, "POST"),
+				text({ '",', "\theaders: {", '\t\tAccept: "' }),
+				i(3, "application/json"),
+				text({ '",', "\t},", "}" }),
+			}),
+		}),
+		text({ ")" }),
+	}),
 }
