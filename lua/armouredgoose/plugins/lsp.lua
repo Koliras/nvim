@@ -95,6 +95,10 @@ return {
 				ols = {
 					init_options = {
 						enable_references = true,
+						enable_hover = true,
+						enable_semantic_tokens = true,
+						enable_document_symbols = true,
+						enable_rename = true,
 					},
 				},
 				lua_ls = {
