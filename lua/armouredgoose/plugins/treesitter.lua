@@ -28,22 +28,20 @@ return { -- Highlight, edit, and navigate code
 		local ts = require("nvim-treesitter.ts_utils")
 
 		--- @param node TSNode
-		--- @param options { bufnr: number }
-		local function literal_type_to_type(node, options)
+		local function literal_type_to_type(node)
 			local child = node:named_child(0)
 			if child == nil then
 				return
 			end
 			local content = LITERAL_TYPE_TO_LSP_TYPE[child:type()]
 			local start_row, start_col, end_row, end_col = child:range()
-			vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, { content })
+			vim.api.nvim_buf_set_text(0, start_row, start_col, end_row, end_col, { content })
 		end
 		--- @param node TSNode
-		--- @param options { bufnr: number }
-		local function handle_type_ann_insides(node, options)
+		local function handle_type_ann_insides(node)
 			local node_type = node:type()
 			if node_type == "literal_type" then
-				literal_type_to_type(node, options)
+				literal_type_to_type(node)
 			elseif node_type == "object_type" then
 				for i = 0, node:named_child_count() - 1 do
 					local property_signature = node:named_child(i)
@@ -56,27 +54,31 @@ return { -- Highlight, edit, and navigate code
 					if type == nil then
 						return
 					end
-					handle_type_ann_insides(type, options)
+					handle_type_ann_insides(type)
 				end
 			elseif node_type == "tuple_type" then
 				local first_element_of_array = node:named_child(0)
 				if first_element_of_array == nil then
 					return
 				end
-				handle_type_ann_insides(first_element_of_array, options)
-				local content = vim.treesitter.get_node_text(first_element_of_array, options.bufnr)
-				local start_row, start_col, end_row, end_col = node:range()
+				handle_type_ann_insides(first_element_of_array)
 				local lines = {}
+				local content = vim.treesitter.get_node_text(first_element_of_array, 0)
 				for s in content:gmatch("[^\r\n]+") do
 					table.insert(lines, s)
 				end
 				lines[#lines] = lines[#lines] .. "[]"
-				vim.api.nvim_buf_set_text(options.bufnr, start_row, start_col, end_row, end_col, lines)
+				local start_row, start_col, end_row, end_col = node:range()
+				vim.api.nvim_buf_set_text(0, start_row, start_col, end_row, end_col, lines)
 			end
 		end
 
+		---@param key string
+		---@param value any
+		---@return string | string[]
+		local function key_value_to_string(key, value) end
+
 		local function json_to_type()
-			local bufnr = vim.api.nvim_get_current_buf()
 			local node = ts.get_node_at_cursor()
 			if node == nil then
 				return
@@ -93,8 +95,27 @@ return { -- Highlight, edit, and navigate code
 			if type_annotation == nil then
 				return
 			end
-			local options = { bufnr = bufnr }
-			handle_type_ann_insides(type_annotation, options)
+
+			-- local text = vim.treesitter.get_node_text(type_annotation, 0)
+			-- local tbl = vim.json.decode(text)
+			-- local content = {}
+			--
+			-- for k, v in pairs(tbl) do
+			-- 	local lines = key_value_to_string(k, v)
+			-- 	if type(lines) == "table" then
+			-- 		for _, line in pairs(lines) do
+			-- 			vim.fn.insert(content, line)
+			-- 		end
+			-- 		vim.fn.insert(content, "")
+			-- 	else
+			-- 		vim.fn.insert(content, lines)
+			-- 	end
+			-- end
+			--
+			-- local start_row, start_col, end_row, end_col = type_annotation:range()
+			-- vim.api.nvim_buf_set_text(0, start_row, start_col, end_row, end_col, content)
+
+			handle_type_ann_insides(type_annotation)
 		end
 
 		vim.keymap.set("n", "<leader>js", json_to_type)
