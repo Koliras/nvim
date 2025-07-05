@@ -36,6 +36,8 @@ return {
 					--  Symbols are things like variables, functions, types, etc.
 					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
 
+					map("<leader>sm", require("telescope.builtin").man_pages, "[S]earch [M]anual")
+
 					-- Fuzzy find all the symbols in your current workspace.
 					--  Similar to document symbols, except searches over your entire project.
 					map(
@@ -62,9 +64,6 @@ return {
 
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					if client and client.name == "ols" then
-						client.server_capabilities.completionProvider = nil
-					end
 					if client and client.server_capabilities.documentHighlightProvider then
 						require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -120,12 +119,12 @@ return {
 			require("mason").setup()
 
 			local ensure_installed = vim.tbl_keys(servers or {})
-			vim.list_extend(ensure_installed, {
-				"stylua", -- Used to format Lua code
-			})
+			vim.list_extend(ensure_installed, {})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
+				automatic_installation = true,
+				ensure_installed = ensure_installed,
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
@@ -230,6 +229,63 @@ return {
 					end,
 				},
 				completion = { completeopt = "menu,menuone,noinsert" },
+
+				mapping = cmp.mapping.preset.insert({
+					["<C-n>"] = cmp.mapping.select_next_item(),
+					["<C-p>"] = cmp.mapping.select_prev_item(),
+
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
+
+					["<C-y>"] = cmp.mapping.confirm({ select = true }),
+
+					-- Manually trigger a completion from nvim-cmp.
+					--  Generally you don't need this, because nvim-cmp will display
+					--  completions whenever it has completion options available.
+					["<C-Space>"] = cmp.mapping.complete({}),
+
+					-- Think of <c-l> as moving to the right of your snippet expansion.
+					--  So if you have a snippet that's like:
+					--  function $name($args)
+					--    $body
+					--  end
+					--
+					-- <c-l> will move you to the right of each of the expansion locations.
+					-- <c-h> is similar, except moving you backwards.
+					["<C-l>"] = cmp.mapping(function()
+						if ls.expand_or_locally_jumpable() then
+							ls.expand_or_jump()
+						end
+					end, { "i", "s" }),
+					["<C-h>"] = cmp.mapping(function()
+						if ls.locally_jumpable(-1) then
+							ls.jump(-1)
+						end
+					end, { "i", "s" }),
+					["<C-k>"] = cmp.mapping(function()
+						if ls.choice_active() then
+							ls.change_choice(-1)
+						end
+					end, { "i", "s" }),
+					["<C-j>"] = cmp.mapping(function()
+						if ls.choice_active() then
+							ls.change_choice(1)
+						end
+					end, { "i", "s" }),
+				}),
+				sources = {
+					{ name = "nvim_lsp" },
+					{ name = "luasnip" },
+					{ name = "path" },
+				},
+			})
+			cmp.setup.filetype({ "odin" }, {
+				snippet = {
+					expand = function(args)
+						ls.lsp_expand(args.body)
+					end,
+				},
+				completion = { completeopt = "menu,menuone,noinsert", autocomplete = false },
 
 				mapping = cmp.mapping.preset.insert({
 					["<C-n>"] = cmp.mapping.select_next_item(),
