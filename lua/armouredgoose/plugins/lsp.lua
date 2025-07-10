@@ -89,8 +89,6 @@ return {
 			--  - settings (table): Override the default settings passed when initializing the server.
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
-				gopls = {},
-				rust_analyzer = {},
 				ols = {
 					init_options = {
 						enable_references = true,
@@ -279,7 +277,7 @@ return {
 					{ name = "path" },
 				},
 			})
-			cmp.setup.filetype({ "odin" }, {
+			cmp.setup.filetype({ "odin", "c", "cpp" }, {
 				snippet = {
 					expand = function(args)
 						ls.lsp_expand(args.body)
