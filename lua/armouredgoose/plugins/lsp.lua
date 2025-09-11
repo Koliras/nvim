@@ -166,10 +166,11 @@ return {
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
-				typescript = { "prettierd", "prettier" },
-				typescriptreact = { "prettierd", "prettier" },
-				javascript = { "prettierd", "prettier" },
-				javascriptreact = { "prettierd", "prettier" },
+				typescript = { "biome", "prettierd", "prettier" },
+				typescriptreact = { "biome", "prettierd", "prettier" },
+				javascript = { "biome", "prettierd", "prettier" },
+				javascriptreact = { "biome", "prettierd", "prettier" },
+				odin = { "ols" },
 
 				["*"] = { "codespell" },
 			},
