@@ -65,6 +65,7 @@ return {
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.documentHighlightProvider then
+						client.server_capabilities.semanticTokensProvider = nil
 						require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = event.buf,
@@ -96,6 +97,7 @@ return {
 						enable_semantic_tokens = true,
 						enable_document_symbols = true,
 						enable_rename = true,
+						enable_auto_import = true,
 					},
 				},
 				lua_ls = {
@@ -285,7 +287,6 @@ return {
 					end,
 				},
 				completion = { completeopt = "menu,menuone,noinsert", autocomplete = false },
-
 				mapping = cmp.mapping.preset.insert({
 					["<C-n>"] = cmp.mapping.select_next_item(),
 					["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -338,4 +339,5 @@ return {
 		end,
 	},
 	{ "windwp/nvim-ts-autotag", opts = {} },
+	-- { "neoclide/coc.nvim", branch = "release" },
 }
